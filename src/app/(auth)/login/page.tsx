@@ -2,6 +2,9 @@ import { Suspense } from "react";
 import { Sparkles, Shield } from "lucide-react";
 import { LoginForm } from "./login-form";
 
+// Force dynamic rendering to prevent Firebase client initialization during static generation
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center p-4 bg-gradient-page">
