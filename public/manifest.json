@@ -1,0 +1,22 @@
+{
+  "name": "CleanOPS",
+  "short_name": "CleanOPS",
+  "start_url": "/app",
+  "display": "standalone",
+  "background_color": "#fdf8eb",
+  "theme_color": "#0a789b",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
