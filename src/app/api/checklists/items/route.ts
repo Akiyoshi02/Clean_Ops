@@ -4,6 +4,9 @@ import { adminDb } from "@/lib/firebase/admin";
 import { requireApiRole } from "@/lib/api-auth";
 import type { ChecklistTemplateItem } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 const payloadSchema = z.object({
   template_id: z.string().min(1),
   title: z.string().min(2),

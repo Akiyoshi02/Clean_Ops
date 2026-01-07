@@ -4,6 +4,9 @@ import { adminDb } from "@/lib/firebase/admin";
 import { requireApiRole } from "@/lib/api-auth";
 import type { Job, JobTask } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 const payloadSchema = z.object({
   completed_at: z.string().nullable().optional(),
   notes: z.string().nullable().optional(),

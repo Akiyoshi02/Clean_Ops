@@ -5,6 +5,9 @@ import { mapDocs } from "@/lib/firebase/db";
 import { requireApiRole } from "@/lib/api-auth";
 import type { Job, Site, TimesheetEntry, Profile } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const periodId = searchParams.get("periodId");

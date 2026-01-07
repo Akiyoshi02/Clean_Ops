@@ -6,6 +6,9 @@ import { requireApiRole } from "@/lib/api-auth";
 import { haversineDistanceMeters } from "@/lib/geo";
 import type { Job, JobClockEvent, Site } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 const payloadSchema = z.object({
   job_id: z.string().min(1),
   type: z.enum(["CLOCK_IN", "CLOCK_OUT"]),

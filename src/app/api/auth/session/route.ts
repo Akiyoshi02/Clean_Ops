@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { adminDb, adminAuth } from "@/lib/firebase/admin";
+
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
 import { createSessionCookie, getSessionCookieOptions } from "@/lib/firebase/session";
 import { SESSION_COOKIE_NAME } from "@/lib/firebase/constants";
 
