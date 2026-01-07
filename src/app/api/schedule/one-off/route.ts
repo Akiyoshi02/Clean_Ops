@@ -3,7 +3,7 @@ import { z } from "zod";
 import { adminDb } from "@/lib/firebase/admin";
 import { mapDocs, nowIso } from "@/lib/firebase/db";
 import { requireApiRole } from "@/lib/api-auth";
-import type { Job } from "@/lib/types";
+import type { Job, ChecklistTemplateItem } from "@/lib/types";
 
 const payloadSchema = z.object({
   siteId: z.string().min(1),
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     .collection("checklist_template_items")
     .where("template_id", "==", parsed.data.checklistTemplateId)
     .get();
-  const items = mapDocs(itemsSnap).sort(
+  const items = mapDocs<ChecklistTemplateItem>(itemsSnap).sort(
     (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0),
   );
   if (items.length > 0) {

@@ -15,7 +15,7 @@ export async function getSitesByIds(ids: string[]) {
   const docs = await adminDb.getAll(...refs);
   return docs
     .filter((doc) => doc.exists)
-    .map((doc) => ({ id: doc.id, ...(doc.data() as Site) } as Site));
+    .map((doc) => ({ ...(doc.data() as Site), id: doc.id } as Site));
 }
 
 export async function createSite(payload: {
@@ -80,7 +80,7 @@ export async function updateSite(
   const now = nowIso();
   await adminDb.collection("sites").doc(id).set({ ...payload, updated_at: now }, { merge: true });
   const doc = await adminDb.collection("sites").doc(id).get();
-  return doc.exists ? ({ id: doc.id, ...(doc.data() as Site) } as Site) : null;
+  return doc.exists ? ({ ...(doc.data() as Site), id: doc.id } as Site) : null;
 }
 
 export async function deleteSite(id: string) {

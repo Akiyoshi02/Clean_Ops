@@ -5,7 +5,7 @@ export function nowIso() {
 }
 
 export function withId<T>(doc: QueryDocumentSnapshot): T & { id: string } {
-  return { id: doc.id, ...(doc.data() as T) };
+  return { ...(doc.data() as T), id: doc.id };
 }
 
 export function mapDocs<T>(snapshot: QuerySnapshot) {
