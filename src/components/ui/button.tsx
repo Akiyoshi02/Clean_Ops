@@ -76,6 +76,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     // Don't use Slot when loading, as Slot requires a single child
     const Comp = asChild && !loading ? Slot : "button";
     
+    // When asChild is true, we can't wrap in Fragment as Slot passes props to child
+    // In that case, just render children directly
+    const content = asChild ? (
+      children
+    ) : loading ? (
+      <>
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span>{children}</span>
+      </>
+    ) : (
+      <>
+        {leftIcon && <span className="[&>svg]:h-4 [&>svg]:w-4">{leftIcon}</span>}
+        {children}
+        {rightIcon && <span className="[&>svg]:h-4 [&>svg]:w-4">{rightIcon}</span>}
+      </>
+    );
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
@@ -83,18 +100,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         {...props}
       >
-        {loading ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span>{children}</span>
-          </>
-        ) : (
-          <>
-            {leftIcon && <span className="[&>svg]:h-4 [&>svg]:w-4">{leftIcon}</span>}
-            {children}
-            {rightIcon && <span className="[&>svg]:h-4 [&>svg]:w-4">{rightIcon}</span>}
-          </>
-        )}
+        {content}
       </Comp>
     );
   }
