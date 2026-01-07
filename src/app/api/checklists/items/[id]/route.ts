@@ -35,7 +35,7 @@ export async function PATCH(
   }
 
   return NextResponse.json(
-    { id: doc.id, ...(doc.data() as ChecklistTemplateItem) },
+    { ...(doc.data() as ChecklistTemplateItem), id: doc.id },
     { status: 200 },
   );
 }

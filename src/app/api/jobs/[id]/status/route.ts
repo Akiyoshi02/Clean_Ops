@@ -40,7 +40,7 @@ export async function PATCH(
   if (!jobDoc.exists) {
     return NextResponse.json({ error: "Job not found" }, { status: 404 });
   }
-  const job = { id: jobDoc.id, ...(jobDoc.data() as Job) } as Job;
+  const job = { ...(jobDoc.data() as Job), id: jobDoc.id } as Job;
 
   if (profile.role === "CLEANER" && job.assigned_cleaner_id !== profile.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -90,7 +90,7 @@ export async function PATCH(
 
   const updatedDoc = await adminDb.collection("jobs").doc(id).get();
   return NextResponse.json(
-    { id: updatedDoc.id, ...(updatedDoc.data() as Job) },
+    { ...(updatedDoc.data() as Job), id: updatedDoc.id },
     { status: 200 },
   );
 }

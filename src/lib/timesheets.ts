@@ -80,7 +80,7 @@ export async function getOrCreateTimesheetPeriod(targetDateIso: string) {
     .get();
   const existing = snapshot.docs[0];
   if (existing?.exists) {
-    return { id: existing.id, ...(existing.data() as TimesheetPeriod) };
+    return { ...(existing.data() as TimesheetPeriod), id: existing.id };
   }
 
   const id = adminDb.collection("timesheet_periods").doc().id;
@@ -127,7 +127,7 @@ export async function upsertTimesheetEntry(payload: {
     );
     const doc = await adminDb.collection("timesheet_entries").doc(existing.id).get();
     return doc.exists
-      ? ({ id: doc.id, ...(doc.data() as TimesheetEntry) } as TimesheetEntry)
+      ? ({ ...(doc.data() as TimesheetEntry), id: doc.id } as TimesheetEntry)
       : null;
   }
 

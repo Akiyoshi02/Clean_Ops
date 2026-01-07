@@ -39,7 +39,7 @@ export async function updateChecklistTemplate(id: string, payload: { name: strin
     .set({ name: payload.name, updated_at: now }, { merge: true });
   const doc = await adminDb.collection("checklist_templates").doc(id).get();
   return doc.exists
-    ? ({ id: doc.id, ...(doc.data() as ChecklistTemplate) } as ChecklistTemplate)
+    ? ({ ...(doc.data() as ChecklistTemplate), id: doc.id } as ChecklistTemplate)
     : null;
 }
 
@@ -83,7 +83,7 @@ export async function updateTemplateItem(
     .set(payload, { merge: true });
   const doc = await adminDb.collection("checklist_template_items").doc(id).get();
   return doc.exists
-    ? ({ id: doc.id, ...(doc.data() as ChecklistTemplateItem) } as ChecklistTemplateItem)
+    ? ({ ...(doc.data() as ChecklistTemplateItem), id: doc.id } as ChecklistTemplateItem)
     : null;
 }
 

@@ -38,7 +38,7 @@ export async function PATCH(
   }
 
   return NextResponse.json(
-    { id: doc.id, ...(doc.data() as TimesheetPeriod) },
+    { ...(doc.data() as TimesheetPeriod), id: doc.id },
     { status: 200 },
   );
 }

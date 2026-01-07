@@ -20,5 +20,5 @@ export async function markNotificationRead(id: string) {
   const now = nowIso();
   await adminDb.collection("notifications").doc(id).set({ read_at: now }, { merge: true });
   const doc = await adminDb.collection("notifications").doc(id).get();
-  return doc.exists ? ({ id: doc.id, ...(doc.data() as Notification) } as Notification) : null;
+  return doc.exists ? ({ ...(doc.data() as Notification), id: doc.id } as Notification) : null;
 }

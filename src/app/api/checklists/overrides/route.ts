@@ -7,7 +7,7 @@ import { requireApiRole } from "@/lib/api-auth";
 const payloadSchema = z.object({
   site_id: z.string().min(1),
   template_id: z.string().min(1),
-  overrides_json: z.record(z.unknown()),
+  overrides_json: z.record(z.string(), z.unknown()),
 });
 
 export async function POST(request: Request) {
