@@ -5,6 +5,9 @@ import { nowIso } from "@/lib/firebase/db";
 import { requireApiRole } from "@/lib/api-auth";
 import type { Profile } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 const payloadSchema = z.object({
   name: z.string().min(2),
   phone: z.string().optional().nullable(),

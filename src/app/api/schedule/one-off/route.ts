@@ -5,6 +5,9 @@ import { mapDocs, nowIso } from "@/lib/firebase/db";
 import { requireApiRole } from "@/lib/api-auth";
 import type { Job, ChecklistTemplateItem } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 const payloadSchema = z.object({
   siteId: z.string().min(1),
   checklistTemplateId: z.string().min(1),

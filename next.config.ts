@@ -3,6 +3,8 @@ import withPWA from "@ducanh2912/next-pwa";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // Silence Turbopack warning about webpack config from PWA plugin
+  turbopack: {},
 };
 
 export default withPWA({

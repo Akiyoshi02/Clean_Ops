@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
+
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
 import { nowIso } from "@/lib/firebase/db";
 import { requireApiRole } from "@/lib/api-auth";
 import type { Profile } from "@/lib/types";

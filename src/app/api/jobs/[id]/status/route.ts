@@ -6,6 +6,9 @@ import { requireApiRole } from "@/lib/api-auth";
 import { isValidStatusTransition } from "@/lib/status";
 import type { Job, JobStatusEvent } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 const payloadSchema = z.object({
   status: z.enum([
     "DRAFT",

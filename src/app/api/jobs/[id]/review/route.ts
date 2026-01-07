@@ -11,6 +11,9 @@ import {
 } from "@/lib/timesheets";
 import type { BreakEvent, Job, JobClockEvent, JobStatusEvent } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 const payloadSchema = z.object({
   action: z.enum(["APPROVE", "REWORK"]),
   rework_note: z.string().optional().nullable(),

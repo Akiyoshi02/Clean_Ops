@@ -5,6 +5,9 @@ import { nowIso } from "@/lib/firebase/db";
 import { requireApiRole } from "@/lib/api-auth";
 import type { TimesheetPeriod } from "@/lib/types";
 
+// Force dynamic rendering - Firebase Admin requires runtime credentials
+export const dynamic = "force-dynamic";
+
 const payloadSchema = z.object({
   status: z.enum(["OPEN", "SUBMITTED", "APPROVED"]),
 });
