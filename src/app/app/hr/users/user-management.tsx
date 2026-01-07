@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Users,
   UserPlus,
@@ -16,6 +16,9 @@ import {
   Shield,
   CheckCircle2,
   XCircle,
+  Sparkles,
+  Filter,
+  Building2,
 } from "lucide-react";
 import { getJson, patchJson, postJson } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
@@ -25,8 +28,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { StatCard, StatsGrid } from "@/components/ui/stat-card";
+import { PageHeader } from "@/components/ui/page-header";
 import { RoleBadge } from "@/components/ui/status-badge";
+import { cn } from "@/lib/utils";
 import type { Profile } from "@/lib/types";
 
 type ProfileRow = Profile;
@@ -42,12 +49,17 @@ const userSchema = z.object({
 
 const staggerContainer = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 0.1 } },
 };
 
 const staggerItem = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 12, scale: 0.98 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { type: "spring" as const, stiffness: 300, damping: 24 }
+  },
 };
 
 export function UserManagement({ initialProfiles }: { initialProfiles: ProfileRow[] }) {
@@ -129,237 +141,285 @@ export function UserManagement({ initialProfiles }: { initialProfiles: ProfileRo
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Team Members</h1>
-          <p className="text-muted-foreground">
-            {activeCount} active of {profiles.length} users
-          </p>
-        </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Add User
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Provision New User</DialogTitle>
-            </DialogHeader>
-            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-              <input type="hidden" {...register("role")} />
-              <div className="space-y-2">
-                <Label>Name</Label>
-                <Input {...register("name")} placeholder="Full name" className="h-11" />
-                {errors.name && (
-                  <p className="text-sm text-destructive">{errors.name.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label>Email</Label>
-                <Input
-                  type="email"
-                  {...register("email")}
-                  placeholder="email@example.com"
-                  className="h-11"
-                />
-                {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label>Role</Label>
-                <Select onValueChange={(value) => setValue("role", value as "HR" | "SUPERVISOR" | "CLEANER")}>
-                  <SelectTrigger className="h-11">
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="HR">HR</SelectItem>
-                    <SelectItem value="SUPERVISOR">Supervisor</SelectItem>
-                    <SelectItem value="CLEANER">Cleaner</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.role && (
-                  <p className="text-sm text-destructive">{errors.role.message}</p>
-                )}
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+      <PageHeader
+        title="Team Members"
+        description={`${activeCount} active of ${profiles.length} users`}
+        icon={Users}
+        iconColor="primary"
+        actions={
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button leftIcon={<UserPlus className="h-4 w-4" />}>
+                Add User
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Provision New User
+                </DialogTitle>
+              </DialogHeader>
+              <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+                <input type="hidden" {...register("role")} />
                 <div className="space-y-2">
-                  <Label>Phone</Label>
-                  <Input {...register("phone")} placeholder="Phone number" className="h-11" />
+                  <Label>Name</Label>
+                  <Input {...register("name")} placeholder="Full name" className="h-12" />
+                  {errors.name && (
+                    <p className="text-sm text-destructive">{errors.name.message}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <Label>Employee ID</Label>
-                  <Input {...register("employeeId")} placeholder="ID" className="h-11" />
+                  <Label>Email</Label>
+                  <Input
+                    type="email"
+                    {...register("email")}
+                    placeholder="email@example.com"
+                    className="h-12"
+                    leftIcon={<Mail className="h-4 w-4" />}
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-destructive">{errors.email.message}</p>
+                  )}
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Pay Rate (hourly)</Label>
-                <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <div className="space-y-2">
+                  <Label>Role</Label>
+                  <Select onValueChange={(value) => setValue("role", value as "HR" | "SUPERVISOR" | "CLEANER")}>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="HR">HR</SelectItem>
+                      <SelectItem value="SUPERVISOR">Supervisor</SelectItem>
+                      <SelectItem value="CLEANER">Cleaner</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.role && (
+                    <p className="text-sm text-destructive">{errors.role.message}</p>
+                  )}
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Phone</Label>
+                    <Input 
+                      {...register("phone")} 
+                      placeholder="Phone number" 
+                      className="h-12"
+                      leftIcon={<Phone className="h-4 w-4" />}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Employee ID</Label>
+                    <Input {...register("employeeId")} placeholder="ID" className="h-12" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Pay Rate (hourly)</Label>
                   <Input
                     type="number"
                     step="0.25"
                     {...register("payRate")}
                     placeholder="0.00"
-                    className="h-11 pl-10"
+                    className="h-12"
+                    leftIcon={<DollarSign className="h-4 w-4" />}
                   />
                 </div>
-              </div>
-              <Button type="submit" className="h-11 w-full" loading={isSubmitting}>
-                Create User
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+                <Button 
+                  type="submit" 
+                  className="h-12 w-full font-semibold" 
+                  loading={isSubmitting}
+                  leftIcon={<UserPlus className="h-4 w-4" />}
+                >
+                  Create User
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        }
+      />
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <Shield className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-lg font-bold">{roleStats.HR}</p>
-              <p className="text-xs text-muted-foreground">HR Staff</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary">
-              <Users className="h-5 w-5 text-secondary-foreground" />
-            </div>
-            <div>
-              <p className="text-lg font-bold">{roleStats.SUPERVISOR}</p>
-              <p className="text-xs text-muted-foreground">Supervisors</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted">
-              <Users className="h-5 w-5 text-muted-foreground" />
-            </div>
-            <div>
-              <p className="text-lg font-bold">{roleStats.CLEANER}</p>
-              <p className="text-xs text-muted-foreground">Cleaners</p>
-            </div>
-          </div>
-        </Card>
-      </div>
+      <StatsGrid columns={3}>
+        <StatCard
+          title="HR Staff"
+          value={roleStats.HR}
+          icon={Shield}
+          description="Administrators"
+          variant="primary"
+        />
+        <StatCard
+          title="Supervisors"
+          value={roleStats.SUPERVISOR}
+          icon={Building2}
+          description="Team leads"
+          variant="default"
+        />
+        <StatCard
+          title="Cleaners"
+          value={roleStats.CLEANER}
+          icon={Users}
+          description="Field staff"
+          variant="success"
+        />
+      </StatsGrid>
 
       {/* Search & Filter */}
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search users..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-11 pl-10"
-          />
+      <Card variant="default" padding="default">
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="relative flex-1">
+            <Input
+              placeholder="Search users..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-12"
+              leftIcon={<Search className="h-4 w-4" />}
+            />
+          </div>
+          <Select value={roleFilter} onValueChange={setRoleFilter}>
+            <SelectTrigger className="h-12 w-full sm:w-48">
+              <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
+              <SelectValue placeholder="All roles" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Roles</SelectItem>
+              <SelectItem value="HR">HR Only</SelectItem>
+              <SelectItem value="SUPERVISOR">Supervisors Only</SelectItem>
+              <SelectItem value="CLEANER">Cleaners Only</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="h-11 w-full sm:w-40">
-            <SelectValue placeholder="All roles" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="HR">HR</SelectItem>
-            <SelectItem value="SUPERVISOR">Supervisor</SelectItem>
-            <SelectItem value="CLEANER">Cleaner</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+        {filteredProfiles.length !== profiles.length && (
+          <p className="mt-3 text-sm text-muted-foreground">
+            Showing {filteredProfiles.length} of {profiles.length} users
+          </p>
+        )}
+      </Card>
 
       {/* Users List */}
-      {filteredProfiles.length > 0 ? (
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-          className="space-y-3"
-        >
-          {filteredProfiles.map((profile) => (
-            <motion.div key={profile.id} variants={staggerItem}>
-              <Card
-                className={`transition-all ${
-                  profile.is_active
-                    ? "border-border/50"
-                    : "border-muted bg-muted/30 opacity-70"
-                }`}
-              >
-                <CardContent className="flex flex-wrap items-center justify-between gap-4 p-4">
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-lg font-semibold ${
-                        profile.is_active
-                          ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {profile.name?.charAt(0).toUpperCase() ?? "?"}
-                    </div>
-                    <div>
-                      <p className="font-semibold">{profile.name}</p>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Mail className="h-3.5 w-3.5" />
-                          {profile.email}
-                        </span>
-                        {profile.phone && (
-                          <span className="flex items-center gap-1">
-                            <Phone className="h-3.5 w-3.5" />
-                            {profile.phone}
-                          </span>
+      <AnimatePresence mode="wait">
+        {filteredProfiles.length > 0 ? (
+          <motion.div
+            key="list"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            className="space-y-3"
+          >
+            {filteredProfiles.map((profile) => (
+              <motion.div key={profile.id} variants={staggerItem} layout>
+                <Card
+                  variant={profile.is_active ? "default" : "ghost"}
+                  className={cn(
+                    "group transition-all duration-200 hover:shadow-md",
+                    !profile.is_active && "opacity-60"
+                  )}
+                >
+                  <CardContent className="flex flex-wrap items-center justify-between gap-4 p-5">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={cn(
+                          "flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-xl font-bold transition-transform group-hover:scale-105",
+                          profile.is_active
+                            ? profile.role === "HR" 
+                              ? "bg-gradient-to-br from-violet-500 to-purple-600 text-white"
+                              : profile.role === "SUPERVISOR"
+                                ? "bg-gradient-to-br from-blue-500 to-cyan-500 text-white"
+                                : "bg-gradient-to-br from-emerald-500 to-teal-500 text-white"
+                            : "bg-muted text-muted-foreground"
                         )}
+                      >
+                        {profile.name?.charAt(0).toUpperCase() ?? "?"}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-lg">{profile.name}</p>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1.5">
+                            <Mail className="h-3.5 w-3.5" />
+                            {profile.email}
+                          </span>
+                          {profile.phone && (
+                            <span className="flex items-center gap-1.5">
+                              <Phone className="h-3.5 w-3.5" />
+                              {profile.phone}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <RoleBadge role={profile.role} />
-                    <div className="flex items-center gap-2">
-                      {profile.is_active ? (
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                      ) : (
-                        <XCircle className="h-4 w-4 text-muted-foreground" />
-                      )}
-                      <Switch
-                        checked={profile.is_active}
-                        onCheckedChange={() => toggleActive(profile)}
-                      />
+                    <div className="flex items-center gap-4">
+                      <RoleBadge role={profile.role} />
+                      <div className="flex items-center gap-3 rounded-full bg-muted/50 px-3 py-1.5">
+                        {profile.is_active ? (
+                          <Badge variant="solid-success" className="gap-1">
+                            <CheckCircle2 className="h-3 w-3" />
+                            Active
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="gap-1">
+                            <XCircle className="h-3 w-3" />
+                            Inactive
+                          </Badge>
+                        )}
+                        <Switch
+                          checked={profile.is_active}
+                          onCheckedChange={() => toggleActive(profile)}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-      ) : profiles.length === 0 ? (
-        <EmptyState
-          icon={Users}
-          title="No team members"
-          description="Add your first team member to get started."
-          action={
-            <Button onClick={() => setOpen(true)}>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Add User
-            </Button>
-          }
-        />
-      ) : (
-        <EmptyState
-          icon={Search}
-          title="No results"
-          description={`No users match your search criteria`}
-        />
-      )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : profiles.length === 0 ? (
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <EmptyState
+              icon="users"
+              title="No team members"
+              description="Add your first team member to get started."
+              action={
+                <Button 
+                  onClick={() => setOpen(true)}
+                  leftIcon={<UserPlus className="h-4 w-4" />}
+                >
+                  Add User
+                </Button>
+              }
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="no-results"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <EmptyState
+              icon="search"
+              title="No results found"
+              description={`No users match "${searchQuery}" ${roleFilter !== "all" ? `in ${roleFilter} role` : ""}`}
+              action={
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setRoleFilter("all");
+                  }}
+                >
+                  Clear filters
+                </Button>
+              }
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
