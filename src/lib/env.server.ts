@@ -34,10 +34,7 @@ export const serverEnv = {
       : ""),
 };
 
-// Only warn at runtime, not during build
-// Check if we're in a build environment by looking for common CI/build indicators
-const isBuildTime = process.env.NODE_ENV === "production" && !process.env.VERCEL_ENV && !process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-if (!serverEnv.FIREBASE_SERVICE_ACCOUNT_JSON && !isBuildTime) {
+if (!serverEnv.FIREBASE_SERVICE_ACCOUNT_JSON) {
   console.warn(
     "FIREBASE_SERVICE_ACCOUNT_JSON is not set. Firebase Admin will fail until provided.",
   );
