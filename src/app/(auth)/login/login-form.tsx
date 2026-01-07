@@ -6,6 +6,8 @@ import type { Route } from "next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Lock, AlertCircle, Clock, ArrowRight, LogIn } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -14,8 +16,8 @@ import { firebaseAuth } from "@/lib/firebase/client";
 import { postJson } from "@/lib/api-client";
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 const ATTEMPT_WINDOW_MS = 10 * 60 * 1000;
@@ -129,9 +131,9 @@ export function LoginForm() {
   };
 
   return (
-    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-sm font-medium">
+        <Label htmlFor="email" className="text-sm font-semibold">
           Email address
         </Label>
         <Input
@@ -139,15 +141,27 @@ export function LoginForm() {
           type="email"
           placeholder="you@example.com"
           autoComplete="email"
-          className="h-11"
+          className="h-12"
+          leftIcon={<Mail className="h-4 w-4" />}
+          error={!!errors.email}
           {...register("email")}
         />
-        {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
-        )}
+        <AnimatePresence>
+          {errors.email && (
+            <motion.p 
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="text-sm text-destructive flex items-center gap-1"
+            >
+              <AlertCircle className="h-3.5 w-3.5" />
+              {errors.email.message}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password" className="text-sm font-medium">
+        <Label htmlFor="password" className="text-sm font-semibold">
           Password
         </Label>
         <Input
@@ -155,34 +169,72 @@ export function LoginForm() {
           type="password"
           placeholder="••••••••"
           autoComplete="current-password"
-          className="h-11"
+          className="h-12"
+          leftIcon={<Lock className="h-4 w-4" />}
+          error={!!errors.password}
           {...register("password")}
         />
-        {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
-        )}
+        <AnimatePresence>
+          {errors.password && (
+            <motion.p 
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="text-sm text-destructive flex items-center gap-1"
+            >
+              <AlertCircle className="h-3.5 w-3.5" />
+              {errors.password.message}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
-      {errorMessage && (
-        <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
-          {errorMessage}
-        </div>
-      )}
+      <AnimatePresence>
+        {errorMessage && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -8 }}
+            className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
+          >
+            <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium">Sign in failed</p>
+              <p className="mt-0.5 text-destructive/80">{errorMessage}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {cooldownSeconds > 0 && (
-        <div className="rounded-xl border border-warning/20 bg-warning/5 p-3 text-sm text-warning">
-          Too many attempts. Try again in {cooldownSeconds}s.
-        </div>
-      )}
+      <AnimatePresence>
+        {cooldownSeconds > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -8 }}
+            className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/10 p-4 text-sm text-warning"
+          >
+            <Clock className="h-5 w-5 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium">Too many attempts</p>
+              <p className="mt-0.5 text-warning/80">Try again in {cooldownSeconds} seconds</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Button
-        className="w-full"
+        className="w-full h-12 text-base font-semibold group"
         type="submit"
         size="lg"
         disabled={isSubmitting || cooldownSeconds > 0}
         loading={isSubmitting}
+        leftIcon={!isSubmitting ? <LogIn className="h-5 w-5" /> : undefined}
       >
         {isSubmitting ? "Signing in..." : "Sign in"}
+        {!isSubmitting && (
+          <ArrowRight className="ml-auto h-5 w-5 transition-transform group-hover:translate-x-1" />
+        )}
       </Button>
     </form>
   );
