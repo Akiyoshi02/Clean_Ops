@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CloudUpload, AlertTriangle, Check, Loader2 } from "lucide-react";
+import { CloudUpload, AlertTriangle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSyncEngine } from "@/lib/offline/useSyncEngine";
 import { Button } from "@/components/ui/button";

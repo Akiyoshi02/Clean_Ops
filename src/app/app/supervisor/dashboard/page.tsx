@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Bell,
   Calendar,
-  Users,
   TrendingUp,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
@@ -77,7 +76,7 @@ export default async function SupervisorDashboard() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Today's Jobs</p>
+                <p className="text-sm font-medium text-muted-foreground">Today&apos;s Jobs</p>
                 <p className="text-3xl font-bold">{jobsList.length}</p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
@@ -184,7 +183,7 @@ export default async function SupervisorDashboard() {
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
             <Calendar className="h-4 w-4" />
-            Today's Schedule
+            Today&apos;s Schedule
           </CardTitle>
           <Link
             href="/app/supervisor/schedule"
