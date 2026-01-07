@@ -5,10 +5,8 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin,
   Clock,
   CheckCircle2,
-  Circle,
   Coffee,
   Navigation,
   AlertTriangle,

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Wifi, WifiOff, Signal, SignalLow } from "lucide-react";
+import { Wifi, WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MotionDiv, fadeIn } from "@/components/ui/motion";
 

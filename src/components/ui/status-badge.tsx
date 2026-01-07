@@ -11,7 +11,6 @@ import {
   Circle,
   Loader2,
   Play,
-  Pause,
   RotateCcw,
   type LucideIcon,
 } from "lucide-react";

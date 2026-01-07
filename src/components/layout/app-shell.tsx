@@ -25,7 +25,6 @@ import { cn } from "@/lib/utils";
 import { navByRole } from "@/lib/nav";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { OnlineStatusPill } from "@/components/layout/online-status";
-import { SyncStatusBanner } from "@/components/layout/sync-status";
 import { useSyncEngine } from "@/lib/offline/useSyncEngine";
 
 type AppShellProfile = {
