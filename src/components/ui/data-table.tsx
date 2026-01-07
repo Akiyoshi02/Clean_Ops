@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { StaggerList, StaggerItem } from "@/components/ui/motion";
 import { EmptyState } from "@/components/ui/empty-state";
-import { ListSkeleton, TableRowSkeleton } from "@/components/ui/skeleton";
+import { ListSkeleton } from "@/components/ui/skeleton";
 
 interface Column<T> {
   key: string;

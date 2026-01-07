@@ -3,22 +3,17 @@
 import * as React from "react";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin,
   Clock,
   CheckCircle2,
   AlertTriangle,
   Camera,
   Coffee,
   Shield,
-  ChevronRight,
-  Send,
   RotateCcw,
   MapPinned,
   Activity,
   Info,
-  Navigation,
 } from "lucide-react";
 import { postJson } from "@/lib/api-client";
 import { calculateBreakSummary } from "@/lib/attendance";

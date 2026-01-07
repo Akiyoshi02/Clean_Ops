@@ -14,7 +14,6 @@ import {
   AlertCircle,
   Timer,
   Coffee,
-  Users,
   TrendingUp,
 } from "lucide-react";
 import { getJson, patchJson, postJson } from "@/lib/api-client";
