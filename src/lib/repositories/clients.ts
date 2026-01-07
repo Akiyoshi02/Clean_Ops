@@ -15,7 +15,7 @@ export async function getClientsByIds(ids: string[]) {
   const docs = await adminDb.getAll(...refs);
   return docs
     .filter((doc) => doc.exists)
-    .map((doc) => ({ id: doc.id, ...(doc.data() as Client) } as Client));
+    .map((doc) => ({ ...(doc.data() as Client), id: doc.id } as Client));
 }
 
 export async function createClient(payload: {
@@ -49,7 +49,7 @@ export async function updateClient(
     .doc(id)
     .set({ ...payload, updated_at: now }, { merge: true });
   const doc = await adminDb.collection("clients").doc(id).get();
-  return doc.exists ? ({ id: doc.id, ...(doc.data() as Client) } as Client) : null;
+  return doc.exists ? ({ ...(doc.data() as Client), id: doc.id } as Client) : null;
 }
 
 export async function deleteClient(id: string) {

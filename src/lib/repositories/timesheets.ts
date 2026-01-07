@@ -39,7 +39,7 @@ export async function updateTimesheetPeriod(id: string, payload: { status?: stri
     .set({ status: payload.status, updated_at: now }, { merge: true });
   const doc = await adminDb.collection("timesheet_periods").doc(id).get();
   return doc.exists
-    ? ({ id: doc.id, ...(doc.data() as TimesheetPeriod) } as TimesheetPeriod)
+    ? ({ ...(doc.data() as TimesheetPeriod), id: doc.id } as TimesheetPeriod)
     : null;
 }
 

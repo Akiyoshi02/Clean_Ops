@@ -40,7 +40,7 @@ export async function PATCH(
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
   return NextResponse.json(
-    { id: doc.id, ...(doc.data() as Profile) },
+    { ...(doc.data() as Profile), id: doc.id },
     { status: 200 },
   );
 }

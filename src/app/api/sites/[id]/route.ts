@@ -46,7 +46,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Site not found" }, { status: 404 });
   }
   return NextResponse.json(
-    { id: doc.id, ...(doc.data() as Site) },
+    { ...(doc.data() as Site), id: doc.id },
     { status: 200 },
   );
 }

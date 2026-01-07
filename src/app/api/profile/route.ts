@@ -36,7 +36,7 @@ export async function PATCH(request: Request) {
 
   const doc = await adminDb.collection("profiles").doc(profile.id).get();
   return NextResponse.json(
-    { id: doc.id, ...(doc.data() as Profile) },
+    { ...(doc.data() as Profile), id: doc.id },
     { status: 200 },
   );
 }

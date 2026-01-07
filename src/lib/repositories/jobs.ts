@@ -91,7 +91,7 @@ export async function getJobsByIds(ids: string[]) {
   const docs = await adminDb.getAll(...refs);
   return docs
     .filter((doc) => doc.exists)
-    .map((doc) => ({ id: doc.id, ...(doc.data() as Job) } as Job));
+    .map((doc) => ({ ...(doc.data() as Job), id: doc.id } as Job));
 }
 
 export async function getJobDetail(jobId: string) {
@@ -100,7 +100,7 @@ export async function getJobDetail(jobId: string) {
     return null;
   }
 
-  const job = { id: jobDoc.id, ...(jobDoc.data() as Job) } as Job;
+  const job = { ...(jobDoc.data() as Job), id: jobDoc.id } as Job;
 
   const [
     tasksSnap,
@@ -120,12 +120,12 @@ export async function getJobDetail(jobId: string) {
     adminDb.collection("sites").doc(job.site_id).get(),
   ]);
 
-  const site = siteDoc.exists ? ({ id: siteDoc.id, ...(siteDoc.data() as Site) } as Site) : null;
+  const site = siteDoc.exists ? ({ ...(siteDoc.data() as Site), id: siteDoc.id } as Site) : null;
   let client: Client | null = null;
   if (site?.client_id) {
     const clientDoc = await adminDb.collection("clients").doc(site.client_id).get();
     client = clientDoc.exists
-      ? ({ id: clientDoc.id, ...(clientDoc.data() as Client) } as Client)
+      ? ({ ...(clientDoc.data() as Client), id: clientDoc.id } as Client)
       : null;
   }
 

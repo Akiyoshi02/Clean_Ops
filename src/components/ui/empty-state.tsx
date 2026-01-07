@@ -41,7 +41,8 @@ interface EmptyStateProps {
   icon?: keyof typeof iconRegistry | LucideIcon;
   title: string;
   description?: string;
-  action?: {
+  /** Action can be either { label, onClick } for simple buttons or a ReactNode for custom actions */
+  action?: React.ReactNode | {
     label: string;
     onClick: () => void;
   };
@@ -91,9 +92,15 @@ export function EmptyState({
         </p>
       )}
       {action && (
-        <Button onClick={action.onClick} className="mt-4" size="sm">
-          {action.label}
-        </Button>
+        <div className="mt-4">
+          {React.isValidElement(action) ? (
+            action
+          ) : (
+            <Button onClick={(action as { label: string; onClick: () => void }).onClick} size="sm">
+              {(action as { label: string; onClick: () => void }).label}
+            </Button>
+          )}
+        </div>
       )}
     </MotionDiv>
   );

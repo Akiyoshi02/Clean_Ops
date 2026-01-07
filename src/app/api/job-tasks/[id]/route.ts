@@ -31,12 +31,12 @@ export async function PATCH(
   if (!taskDoc.exists) {
     return NextResponse.json({ error: "Task not found" }, { status: 404 });
   }
-  const task = { id: taskDoc.id, ...(taskDoc.data() as JobTask) } as JobTask;
+  const task = { ...(taskDoc.data() as JobTask), id: taskDoc.id } as JobTask;
 
   if (profile.role === "CLEANER") {
     const jobDoc = await adminDb.collection("jobs").doc(task.job_id).get();
     const job = jobDoc.exists
-      ? ({ id: jobDoc.id, ...(jobDoc.data() as Job) } as Job)
+      ? ({ ...(jobDoc.data() as Job), id: jobDoc.id } as Job)
       : null;
     if (!job || job.assigned_cleaner_id !== profile.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -55,7 +55,7 @@ export async function PATCH(
   await adminDb.collection("job_tasks").doc(id).set(updates, { merge: true });
   const doc = await adminDb.collection("job_tasks").doc(id).get();
   return NextResponse.json(
-    { id: doc.id, ...(doc.data() as JobTask) },
+    { ...(doc.data() as JobTask), id: doc.id },
     { status: 200 },
   );
 }

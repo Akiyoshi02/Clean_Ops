@@ -41,7 +41,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Client not found" }, { status: 404 });
   }
   return NextResponse.json(
-    { id: doc.id, ...(doc.data() as Client) },
+    { ...(doc.data() as Client), id: doc.id },
     { status: 200 },
   );
 }

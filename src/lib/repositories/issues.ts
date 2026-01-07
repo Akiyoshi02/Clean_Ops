@@ -46,5 +46,5 @@ export async function updateIssueStatus(id: string, status: Issue["status"]) {
   const now = nowIso();
   await adminDb.collection("issues").doc(id).set({ status, updated_at: now }, { merge: true });
   const doc = await adminDb.collection("issues").doc(id).get();
-  return doc.exists ? ({ id: doc.id, ...(doc.data() as Issue) } as Issue) : null;
+  return doc.exists ? ({ ...(doc.data() as Issue), id: doc.id } as Issue) : null;
 }
